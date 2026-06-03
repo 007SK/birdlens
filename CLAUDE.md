@@ -195,7 +195,7 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 ## Current Phase
 
-**Phase 2 — Frontend Core** (not started)
+**Phase 3 — Enrichment + Polish**
 
 ---
 
@@ -203,3 +203,6 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 - **Phase 1 — Backend Foundation** ✅ completed 2026-06-03
   Scaffold → BirdNET install → audio conversion pipeline → /analyze + /feed + /stats endpoints → Supabase integration → local end-to-end test passing
+
+- **Phase 2 — Frontend Core** ✅ completed 2026-06-03
+  Vite + React scaffold → StatsBar (live stats from Supabase) → RecordTab (MediaRecorder, countdown, mic permission handling) → UploadTab (drag-and-drop, client-side duration check) → SpeciesCard + ResultsCard → GlobalFeed → LocationInput with localStorage → full loading/error states including backend-unreachable message
