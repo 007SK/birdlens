@@ -195,7 +195,7 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 ## Current Phase
 
-**Phase 3 — Enrichment + Polish**
+**Phase 4 — Deployment**
 
 ---
 
@@ -206,3 +206,6 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 - **Phase 2 — Frontend Core** ✅ completed 2026-06-03
   Vite + React scaffold → StatsBar (live stats from Supabase) → RecordTab (MediaRecorder, countdown, mic permission handling) → UploadTab (drag-and-drop, client-side duration check) → SpeciesCard + ResultsCard → GlobalFeed → LocationInput with localStorage → full loading/error states including backend-unreachable message
+
+- **Phase 3 — Enrichment + Polish** ✅ completed 2026-06-03
+  iNaturalist fun facts (two-step search→detail, HTML stripped, generic sentences skipped) → Wikipedia images (User-Agent header, 120×120, emoji placeholder) → species_cache re-enrichment for NULL rows → LocationInput geolocation (Nominatim reverse+forward geocode, {text,lat,lon} JSON) → lat/lon wired into /analyze FormData → UI polish (StatsBar icons, italic fun facts, bold feed species, muted tagline) → mobile responsive CSS
