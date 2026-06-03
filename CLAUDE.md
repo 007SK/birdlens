@@ -195,4 +195,11 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 ## Current Phase
 
-**Phase 1 — Backend Foundation** (not started)
+**Phase 2 — Frontend Core** (not started)
+
+---
+
+## Phase Completion Log
+
+- **Phase 1 — Backend Foundation** ✅ completed 2026-06-03
+  Scaffold → BirdNET install → audio conversion pipeline → /analyze + /feed + /stats endpoints → Supabase integration → local end-to-end test passing

@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+supabase
+soundfile
+numpy
+httpx
+python-dotenv
+birdnetlib
