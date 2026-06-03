@@ -1,0 +1,8 @@
+.env
+__pycache__
+*.pyc
+.pytest_cache
+test_*.py
+*.wav
+*.mp3
+*.m4a
