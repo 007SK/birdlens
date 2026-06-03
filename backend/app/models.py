@@ -28,6 +28,7 @@ class AnalyzeResponse(BaseModel):
 class TopSpeciesOut(BaseModel):
     species_common: str
     confidence: float
+    image_url: Optional[str] = None
 
 
 class FeedRunOut(BaseModel):

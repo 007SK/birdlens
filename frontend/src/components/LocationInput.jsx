@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const STORAGE_KEY = 'birdlens_location'
 const NOMINATIM = 'https://nominatim.openstreetmap.org'
@@ -15,6 +15,13 @@ function readStored() {
   }
 }
 
+function extractCityCountry(address) {
+  const city = address?.city || address?.town || address?.village || ''
+  const country = address?.country || ''
+  if (city && country) return `${city}, ${country}`
+  return city || country || ''
+}
+
 export default function LocationInput() {
   const stored = readStored()
   const [saved, setSaved] = useState(stored?.text ?? '')
@@ -23,13 +30,27 @@ export default function LocationInput() {
   const [geoError, setGeoError] = useState('')
   const [geoLoading, setGeoLoading] = useState(false)
   const [justSaved, setJustSaved] = useState(false)
+  const [suggestions, setSuggestions] = useState([])
   const inputRef = useRef(null)
+  const debounceRef = useRef(null)
+  const wrapRef = useRef(null)
+
+  useEffect(() => {
+    function onMouseDown(e) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+        setSuggestions([])
+      }
+    }
+    document.addEventListener('mousedown', onMouseDown)
+    return () => document.removeEventListener('mousedown', onMouseDown)
+  }, [])
 
   function persistLocation(text, lat, lon) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ text, lat, lon }))
     setSaved(text)
     setEditing(false)
     setGeoError('')
+    setSuggestions([])
     setJustSaved(true)
     setTimeout(() => setJustSaved(false), 2000)
   }
@@ -50,7 +71,7 @@ export default function LocationInput() {
             { headers: { 'Accept-Language': 'en' } }
           )
           const data = await res.json()
-          const text = data.display_name ?? `${lat.toFixed(4)}, ${lon.toFixed(4)}`
+          const text = extractCityCountry(data.address) || `${lat.toFixed(4)}, ${lon.toFixed(4)}`
           setDraft(text)
           persistLocation(text, lat, lon)
         } catch {
@@ -66,16 +87,54 @@ export default function LocationInput() {
     )
   }
 
-  async function geocodeAndSave(text) {
-    if (!text) return
+  async function fetchSuggestions(text) {
     try {
       const res = await fetch(
-        `${NOMINATIM}/search?q=${encodeURIComponent(text)}&format=json&limit=1`,
+        `${NOMINATIM}/search?q=${encodeURIComponent(text)}&format=json&limit=3&addressdetails=1`,
+        { headers: { 'Accept-Language': 'en' } }
+      )
+      const results = await res.json()
+      setSuggestions(
+        results
+          .map((r) => ({
+            text: extractCityCountry(r.address),
+            lat: parseFloat(r.lat),
+            lon: parseFloat(r.lon),
+          }))
+          .filter((s) => s.text)
+      )
+    } catch {
+      setSuggestions([])
+    }
+  }
+
+  function handleDraftChange(e) {
+    const val = e.target.value
+    setDraft(val)
+    clearTimeout(debounceRef.current)
+    if (val.trim().length < 2) {
+      setSuggestions([])
+      return
+    }
+    debounceRef.current = setTimeout(() => fetchSuggestions(val.trim()), 500)
+  }
+
+  function selectSuggestion(s) {
+    setDraft(s.text)
+    persistLocation(s.text, s.lat, s.lon)
+  }
+
+  async function geocodeAndSave(text) {
+    try {
+      const res = await fetch(
+        `${NOMINATIM}/search?q=${encodeURIComponent(text)}&format=json&limit=1&addressdetails=1`,
         { headers: { 'Accept-Language': 'en' } }
       )
       const results = await res.json()
       if (results.length > 0) {
-        persistLocation(text, parseFloat(results[0].lat), parseFloat(results[0].lon))
+        const r = results[0]
+        const formatted = extractCityCountry(r.address) || text
+        persistLocation(formatted, parseFloat(r.lat), parseFloat(r.lon))
       } else {
         persistLocation(text, null, null)
       }
@@ -90,14 +149,14 @@ export default function LocationInput() {
     if (val) geocodeAndSave(val)
   }
 
-  function handleBlur() {
-    const val = draft.trim()
-    if (val && val !== saved) geocodeAndSave(val)
-  }
-
   function handleKeyDown(e) {
+    if (e.key === 'Escape') {
+      setSuggestions([])
+      return
+    }
     if (e.key === 'Enter') {
       e.preventDefault()
+      setSuggestions([])
       const val = draft.trim()
       if (val) geocodeAndSave(val)
     }
@@ -107,6 +166,7 @@ export default function LocationInput() {
     setDraft(saved)
     setEditing(true)
     setGeoError('')
+    setSuggestions([])
     setTimeout(() => inputRef.current?.focus(), 0)
   }
 
@@ -122,19 +182,33 @@ export default function LocationInput() {
   }
 
   return (
-    <div className="location-form-wrap">
+    <div className="location-form-wrap" ref={wrapRef}>
       <form className="location-form" onSubmit={handleSubmit}>
-        <input
-          ref={inputRef}
-          className="location-form__input"
-          type="text"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder="Your location (optional — improves accuracy)"
-          autoComplete="off"
-        />
+        <div className="location-form__input-wrap">
+          <input
+            ref={inputRef}
+            className="location-form__input"
+            type="text"
+            value={draft}
+            onChange={handleDraftChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Where is the bird sound from?"
+            autoComplete="off"
+          />
+          {suggestions.length > 0 && (
+            <ul className="location-suggestions">
+              {suggestions.map((s, i) => (
+                <li
+                  key={i}
+                  className="location-suggestion"
+                  onMouseDown={(e) => { e.preventDefault(); selectSuggestion(s) }}
+                >
+                  📍 {s.text}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <button
           className="btn btn--ghost location-form__geo-btn"
           type="button"
@@ -148,12 +222,13 @@ export default function LocationInput() {
           <button
             className="btn btn--ghost location-form__btn"
             type="button"
-            onClick={() => setEditing(false)}
+            onClick={() => { setSuggestions([]); setEditing(false) }}
           >
             Cancel
           </button>
         )}
       </form>
+      <p className="location-helper">Optional — helps identify local species</p>
       {geoError && <p className="location-geo-error">{geoError}</p>}
     </div>
   )

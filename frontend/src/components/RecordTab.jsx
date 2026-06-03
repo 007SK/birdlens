@@ -13,6 +13,7 @@ export default function RecordTab({ onResult }) {
   const mediaRecorderRef = useRef(null)
   const chunksRef = useRef([])
   const timerRef = useRef(null)
+  const startTimeRef = useRef(null)
 
   useEffect(() => () => clearInterval(timerRef.current), [])
 
@@ -41,6 +42,7 @@ export default function RecordTab({ onResult }) {
     }
 
     recorder.start(250)
+    startTimeRef.current = Date.now()
     setElapsed(0)
     setSecondsLeft(MAX_SECONDS)
     setPhase('recording')
@@ -63,7 +65,7 @@ export default function RecordTab({ onResult }) {
   }
 
   async function submitBlob(blob) {
-    const duration = Math.min(elapsed || 1, MAX_SECONDS)
+    const duration = Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000))
     const form = new FormData()
     form.append('audio', blob, 'recording.webm')
     form.append('duration', duration)

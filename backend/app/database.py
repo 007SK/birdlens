@@ -97,7 +97,7 @@ def save_species_cache(
 
 
 def get_feed() -> list[dict]:
-    """Return the last 10 runs with their top 2 detections by confidence."""
+    """Return the last 10 runs with their top 2 detections, including cached image URLs."""
     client = get_supabase_client()
 
     runs_result = (
@@ -113,10 +113,22 @@ def get_feed() -> list[dict]:
     run_ids = [r["id"] for r in runs_result.data]
     dets_result = (
         client.table("detections")
-        .select("run_id, species_common, confidence")
+        .select("run_id, species_common, species_scientific, confidence")
         .in_("run_id", run_ids)
         .execute()
     )
+
+    # Look up image URLs for all unique scientific names in one query
+    scientific_names = list({d["species_scientific"] for d in dets_result.data})
+    image_by_species: dict[str, Optional[str]] = {}
+    if scientific_names:
+        cache_result = (
+            client.table("species_cache")
+            .select("species_scientific, image_url")
+            .in_("species_scientific", scientific_names)
+            .execute()
+        )
+        image_by_species = {r["species_scientific"]: r["image_url"] for r in cache_result.data}
 
     # Group detections by run_id
     dets_by_run: dict[str, list] = {}
@@ -137,7 +149,11 @@ def get_feed() -> list[dict]:
                 "duration_seconds": run["duration_seconds"],
                 "source": run["source"],
                 "top_species": [
-                    {"species_common": d["species_common"], "confidence": d["confidence"]}
+                    {
+                        "species_common": d["species_common"],
+                        "confidence": d["confidence"],
+                        "image_url": image_by_species.get(d["species_scientific"]),
+                    }
                     for d in top
                 ],
             }

@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api/client.js'
 
+const BADGE_COLORS = {
+  'Very likely': '#4CAF50',
+  'Likely':      '#FF9800',
+  'Possible':    '#607D8B',
+}
+
+function confidenceLabel(conf) {
+  if (conf >= 0.75) return 'Very likely'
+  if (conf >= 0.55) return 'Likely'
+  return 'Possible'
+}
+
 function relativeTime(isoString) {
   const diff = Math.floor((Date.now() - new Date(isoString)) / 1000)
   if (diff < 60)  return 'just now'
@@ -14,6 +26,28 @@ function relativeTime(isoString) {
   }
   const d = Math.floor(diff / 86400)
   return `${d} ${d === 1 ? 'day' : 'days'} ago`
+}
+
+function FeedSpeciesRow({ species }) {
+  const [imgError, setImgError] = useState(false)
+  const label = confidenceLabel(species.confidence)
+  const badgeColor = BADGE_COLORS[label]
+
+  return (
+    <div className="feed-card__species-row">
+      {species.image_url && !imgError
+        ? <img
+            className="feed-card__img"
+            src={species.image_url}
+            alt={species.species_common}
+            onError={() => setImgError(true)}
+          />
+        : <div className="feed-card__img-placeholder">🐦</div>
+      }
+      <span className="feed-card__name">{species.species_common}</span>
+      <span className="feed-badge" style={{ background: badgeColor }}>{label}</span>
+    </div>
+  )
 }
 
 export default function GlobalFeed({ refreshTrigger }) {
@@ -48,27 +82,19 @@ export default function GlobalFeed({ refreshTrigger }) {
         <ul className="global-feed__list">
           {runs.slice(0, 10).map((run) => {
             const icon = run.source === 'mic' ? '🎙' : '⬆️'
-            const topSpeciesList = (run.top_species ?? []).slice(0, 2)
+            const topSpecies = run.top_species ?? []
 
             return (
-              <li key={run.run_id} className="feed-entry">
-                <span className="feed-entry__time">{relativeTime(run.created_at)}</span>
-                <span className="feed-entry__detail">
-                  {icon} {run.duration_seconds}s
-                  {topSpeciesList.length > 0
-                    ? topSpeciesList.map((s, i) => (
-                        <span key={s.species_common}>
-                          {i === 0 ? ' · ' : ', '}
-                          <strong className="feed-entry__species">{s.species_common}</strong>
-                          {' '}
-                          <span className="feed-entry__pct">
-                            ({Math.round(s.confidence * 100)}%)
-                          </span>
-                        </span>
-                      ))
-                    : ' · No detections'
-                  }
-                </span>
+              <li key={run.run_id} className="feed-card">
+                <div className="feed-card__meta">
+                  {icon} {run.duration_seconds}s · {relativeTime(run.created_at)}
+                </div>
+                {topSpecies.length === 0
+                  ? <p className="feed-card__empty">No detections above threshold</p>
+                  : topSpecies.map((s) => (
+                      <FeedSpeciesRow key={s.species_common} species={s} />
+                    ))
+                }
               </li>
             )
           })}
