@@ -69,6 +69,11 @@ export default function RecordTab({ onResult }) {
     form.append('duration', duration)
     form.append('source', 'mic')
     try {
+      const loc = JSON.parse(localStorage.getItem('birdlens_location') ?? 'null')
+      if (loc?.lat != null) form.append('lat', loc.lat)
+      if (loc?.lon != null) form.append('lon', loc.lon)
+    } catch {}
+    try {
       const data = await api.analyze(form)
       setPhase('idle')
       onResult(data)

@@ -13,7 +13,8 @@
   color: #e8f5e8;
   display: flex;
   justify-content: center;
-  gap: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
   padding: 0.55rem 1rem;
   font-size: 0.85rem;
 }
@@ -25,8 +26,8 @@
 }
 
 .stats-bar__value {
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 800;
+  font-size: 1.2rem;
   color: #7dd87d;
 }
 
@@ -35,6 +36,11 @@
   text-transform: uppercase;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
+}
+
+.stats-bar__icon {
+  font-size: 0.95rem;
+  margin-right: 0.1rem;
 }
 
 .stats-bar__error {
@@ -59,8 +65,8 @@
 
 .app-tagline {
   margin-top: 0.5rem;
-  color: #4a7a4a;
-  font-size: 1.05rem;
+  color: #7a9a7a;
+  font-size: 0.98rem;
 }
 
 /* ── Main ── */
@@ -70,6 +76,7 @@
   width: 100%;
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -114,10 +121,11 @@
 /* ── Footer ── */
 .app-footer {
   text-align: center;
-  padding: 1.25rem 1rem;
+  padding: 1.5rem 1rem;
+  margin-top: 1rem;
   border-top: 1px solid #d0e8d0;
-  font-size: 0.82rem;
-  color: #5a7a5a;
+  font-size: 0.78rem;
+  color: #8aaa8a;
 }
 
 .app-footer a {
@@ -189,6 +197,30 @@
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
+}
+
+.location-display__check {
+  font-size: 0.8rem;
+  color: #2a6a2a;
+  font-weight: 600;
+}
+
+.location-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.location-form__geo-btn {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+}
+
+.location-geo-error {
+  font-size: 0.82rem;
+  color: #b00;
+  margin: 0;
 }
 
 /* ── Shared buttons ── */
@@ -491,23 +523,24 @@
 }
 
 .species-card__img {
-  width: 72px;
-  height: 72px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
   flex-shrink: 0;
   background: #d8e8d8;
 }
 
 .species-card__img-placeholder {
-  width: 72px;
-  height: 72px;
-  border-radius: 8px;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
   background: #d8e8d8;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 2.8rem;
 }
 
 .species-card__body {
@@ -551,11 +584,12 @@
 
 .species-card__fact {
   font-size: 0.82rem;
-  color: #5a7a5a;
-  line-height: 1.45;
+  font-style: italic;
+  color: #6a8a6a;
+  line-height: 1.5;
   border-left: 3px solid #b0d8b0;
-  padding-left: 0.6rem;
-  margin-top: 0.3rem;
+  padding-left: 0.65rem;
+  margin-top: 0.4rem;
 }
 
 /* ── GlobalFeed ── */
@@ -614,4 +648,55 @@
 .feed-entry__detail {
   color: #2a4a2a;
   line-height: 1.4;
+}
+
+.feed-entry__species {
+  font-weight: 600;
+  color: #1a3a1a;
+}
+
+.feed-entry__pct {
+  color: #8aaa8a;
+  font-size: 0.78rem;
+}
+
+/* ── Mobile responsiveness ── */
+@media (max-width: 480px) {
+  .app-main {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+
+  .stats-bar {
+    gap: 0.6rem 1.5rem;
+    padding: 0.6rem 1rem;
+    justify-content: space-around;
+  }
+
+  .btn--large {
+    width: 100%;
+  }
+
+  .record-tab {
+    align-items: stretch;
+  }
+
+  .species-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .species-card__img,
+  .species-card__img-placeholder {
+    width: 100%;
+    height: 160px;
+    border-radius: 8px;
+  }
+
+  .location-form {
+    flex-wrap: wrap;
+  }
+
+  .location-form__geo-btn {
+    width: 100%;
+  }
 }

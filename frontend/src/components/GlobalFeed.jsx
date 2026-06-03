@@ -48,17 +48,26 @@ export default function GlobalFeed({ refreshTrigger }) {
         <ul className="global-feed__list">
           {runs.slice(0, 10).map((run) => {
             const icon = run.source === 'mic' ? '🎙' : '⬆️'
-            const topSpecies = (run.top_species ?? [])
-              .slice(0, 2)
-              .map((s) => `${s.species_common} (${s.confidence_label ?? Math.round(s.confidence * 100) + '%'})`)
-              .join(', ')
+            const topSpeciesList = (run.top_species ?? []).slice(0, 2)
 
             return (
               <li key={run.run_id} className="feed-entry">
                 <span className="feed-entry__time">{relativeTime(run.created_at)}</span>
                 <span className="feed-entry__detail">
                   {icon} {run.duration_seconds}s
-                  {topSpecies ? ` · ${topSpecies}` : ' · No detections'}
+                  {topSpeciesList.length > 0
+                    ? topSpeciesList.map((s, i) => (
+                        <span key={s.species_common}>
+                          {i === 0 ? ' · ' : ', '}
+                          <strong className="feed-entry__species">{s.species_common}</strong>
+                          {' '}
+                          <span className="feed-entry__pct">
+                            ({Math.round(s.confidence * 100)}%)
+                          </span>
+                        </span>
+                      ))
+                    : ' · No detections'
+                  }
                 </span>
               </li>
             )

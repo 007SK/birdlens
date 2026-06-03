@@ -58,7 +58,12 @@ def save_detections(run_id: str, detections: list[dict]) -> None:
 
 
 def get_or_cache_species(species_scientific: str) -> Optional[dict]:
-    """Return the species_cache row for this scientific name, or None if not cached."""
+    """Return the species_cache row, or None if not cached or both enrichment fields are NULL.
+
+    A row with both image_url and fun_fact NULL is treated as uncached so
+    that the enrichment pipeline re-fetches it (handles the pre-existing
+    NULL rows from earlier runs without manual deletion).
+    """
     result = (
         get_supabase_client()
         .table("species_cache")
@@ -66,7 +71,12 @@ def get_or_cache_species(species_scientific: str) -> Optional[dict]:
         .eq("species_scientific", species_scientific)
         .execute()
     )
-    return result.data[0] if result.data else None
+    if not result.data:
+        return None
+    row = result.data[0]
+    if row.get("image_url") is None and row.get("fun_fact") is None:
+        return None
+    return row
 
 
 def save_species_cache(

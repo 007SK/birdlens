@@ -31,6 +31,7 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
       ) : (
         <>
           <span className="stats-bar__item">
+            <span className="stats-bar__icon">🎙</span>
             <span className="stats-bar__value">{val('total_runs')}</span>
             <span className="stats-bar__label">Recordings</span>
           </span>
@@ -39,6 +40,7 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
             <span className="stats-bar__label">Detections</span>
           </span>
           <span className="stats-bar__item">
+            <span className="stats-bar__icon">🐦</span>
             <span className="stats-bar__value">{val('unique_species')}</span>
             <span className="stats-bar__label">Species</span>
           </span>
