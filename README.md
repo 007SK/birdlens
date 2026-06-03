@@ -1,2 +1,12 @@
-# birdlens
-BirdLens is a browser-based acoustic bird detection app powered by BirdNET-Analyzer. Users record a short audio clip or upload an existing one, and BirdLens identifies bird species present in the audio — returning each species with a confidence score, a photograph, and a fun fact.
+# BirdLens
+Browser-based bird sound detection powered by BirdNET-Analyzer.
+Record or upload a clip → identify species → contribute to a shared discovery log.
+
+**Live demo:** [link — add after deployment]  
+**Built with:** BirdNET-Analyzer (Cornell Lab of Ornithology), FastAPI, React, Supabase
+
+## Status
+🚧 In active development — see [PRD](docs/PRD.md) for full product specification.
+
+## Roadmap
+See [docs/PRD.md → Section 14](docs/PRD.md#14-roadmap)
