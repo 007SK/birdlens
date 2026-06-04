@@ -195,7 +195,7 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 ## Current Phase
 
-**Phase 4 — Deployment**
+**Phase 4 — Deployment** ✅ complete
 
 ---
 
@@ -209,3 +209,6 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 - **Phase 3 — Enrichment + Polish** ✅ completed 2026-06-03
   iNaturalist fun facts (two-step search→detail, HTML stripped, generic sentences skipped) → Wikipedia images (User-Agent header, 120×120, emoji placeholder) → species_cache re-enrichment for NULL rows → LocationInput geolocation (Nominatim reverse+forward geocode, {text,lat,lon} JSON) → lat/lon wired into /analyze FormData → UI polish (StatsBar icons, italic fun facts, bold feed species, muted tagline) → mobile responsive CSS
+
+- **Phase 4 — Deployment** ✅ completed 2026-06-04
+  Dockerfile (python:3.11-slim + ffmpeg, port 7860) → HF Spaces push via git subtree → missing deps resolved (librosa, tensorflow-cpu) → backend live at swati007-birdlens-backend.hf.space → frontend .env.production wired to HF Space URL → Vercel deploy via GitHub push → README finalised

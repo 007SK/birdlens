@@ -80,7 +80,7 @@ export default function GlobalFeed({ refreshTrigger }) {
 
       {!loading && !error && runs.length > 0 && (
         <ul className="global-feed__list">
-          {runs.slice(0, 10).map((run) => {
+          {runs.filter((run) => (run.top_species ?? []).length > 0).slice(0, 10).map((run) => {
             const icon = run.source === 'mic' ? '🎙' : '⬆️'
             const topSpecies = run.top_species ?? []
 
