@@ -6,4 +6,5 @@ soundfile
 numpy
 httpx
 python-dotenv
+librosa
 birdnetlib
