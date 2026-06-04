@@ -1,65 +1,46 @@
 # BirdLens
-
 Browser-based bird sound detection powered by BirdNET-Analyzer.
 Record or upload a clip → identify species instantly.
 
-**Live demo:** https://birdlens.vercel.app  
-**Built with:** BirdNET-Analyzer (Cornell Lab of Ornithology), FastAPI, React, Supabase, Hugging Face Spaces
+**Live demo:** https://birdlens.vercel.app
 
----
+## What it does
+Record audio from your browser mic or upload a clip (max 30s).
+BirdLens identifies bird species present in the audio and returns
+each detection with a photograph, confidence score, and fun fact.
+Every run contributes to a shared global feed visible to all visitors.
 
 ## Architecture
-
-| Layer | Technology | Host |
-|---|---|---|
-| Frontend | React (Vite) | Vercel |
-| Backend | FastAPI + BirdNET-Analyzer | Hugging Face Spaces |
-| Database | Supabase (PostgreSQL) | Supabase |
-| Bird images | Wikipedia REST API | — |
-| Fun facts | iNaturalist API | — |
-
-```
-Browser → Vercel (React)  →  HF Space (FastAPI + BirdNET)  →  Supabase (PostgreSQL)
-```
-
----
+- Frontend: React (Vite) → Vercel
+- Backend: FastAPI + BirdNET-Analyzer → Hugging Face Spaces
+- Database: Supabase (PostgreSQL)
+- Bird images: Wikipedia API
+- Species info: iNaturalist API
 
 ## Local Development
 
-**Prerequisites:** Python 3.11, Node 18+, ffmpeg
-
-**Backend**
-
+Backend:
 ```bash
 cd backend
-cp .env.example .env          # fill in SUPABASE_URL and SUPABASE_SERVICE_KEY
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+cp .env.example .env  # add your Supabase credentials
+pip3 install -r requirements.txt
+python3 -m uvicorn app.main:app --reload
 ```
 
-**Frontend**
-
+Frontend:
 ```bash
 cd frontend
+cp .env.example .env  # set VITE_API_BASE_URL=http://localhost:8000
 npm install
-# .env already points to localhost:8000 for local dev
-npm run dev                   # http://localhost:5173
+npm run dev
 ```
-
-**Docker (backend only)**
-
-```bash
-cd backend
-docker build -t birdlens-backend .
-docker run -p 7860:7860 --env-file .env birdlens-backend
-```
-
----
 
 ## Product Decisions
-
-See `docs/PRD.md` for the full specification and decision log.
+See `docs/PRD.md` for full specification and decision log.
 
 ## Roadmap
+See `docs/PRD.md` → Section 14
 
-See `docs/PRD.md` → Section 14.
+## Attribution
+Built on BirdNET-Analyzer by the K. Lisa Yang Center for Conservation Bioacoustics, Cornell Lab of Ornithology.
+BirdNET models: CC BY-NC-SA 4.0 (non-commercial use).

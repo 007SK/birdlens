@@ -212,3 +212,10 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 - **Phase 4 — Deployment** ✅ completed 2026-06-04
   Dockerfile (python:3.11-slim + ffmpeg, port 7860) → HF Spaces push via git subtree → missing deps resolved (librosa, tensorflow-cpu) → backend live at swati007-birdlens-backend.hf.space → frontend .env.production wired to HF Space URL → Vercel deploy via GitHub push → README finalised
+
+---
+
+## Live URLs
+
+- **Frontend:** https://birdlens.vercel.app
+- **Backend:** https://swati007-birdlens-backend.hf.space
