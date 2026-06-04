@@ -7,4 +7,5 @@ numpy
 httpx
 python-dotenv
 librosa
+tensorflow-cpu
 birdnetlib
