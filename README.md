@@ -4,6 +4,9 @@ Record or upload a clip → identify species instantly.
 
 **Live demo:** https://birdlens.vercel.app
 
+
+ <img src="docs/BirdLensV1Screenshot.png" alt="BirdLens app screenshot" width="700">
+
 ## What it does
 Record audio from your browser mic or upload a clip (max 30s).
 BirdLens identifies bird species present in the audio and returns
