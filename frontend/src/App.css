@@ -19,28 +19,23 @@
   font-size: 0.85rem;
 }
 
-.stats-bar__item {
+.stats-bar__sentence {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.88rem;
 }
 
-.stats-bar__value {
+.stats-bar__chunk {
+  white-space: nowrap;
+}
+
+.stats-bar__num {
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #7dd87d;
-}
-
-.stats-bar__label {
-  opacity: 0.8;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-}
-
-.stats-bar__icon {
-  font-size: 0.95rem;
-  margin-right: 0.1rem;
 }
 
 .stats-bar__error {
@@ -683,68 +678,57 @@
   margin-bottom: 0.55rem;
 }
 
-.feed-card__species-grid {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: flex-start;
+.feed-card__species-list {
+  /* container for list rows */
 }
 
-.feed-cell {
+.feed-species-row {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 90px;
-  flex-shrink: 0;
-  text-align: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eaf3ea;
 }
 
-.feed-cell__img {
-  width: 56px;
-  height: 56px;
+.feed-species-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.feed-species-row__img {
+  width: 36px;
+  height: 36px;
   object-fit: cover;
   border-radius: 6px;
+  flex-shrink: 0;
 }
 
-.feed-cell__img-placeholder {
-  width: 56px;
-  height: 56px;
+.feed-species-row__img-placeholder {
+  width: 36px;
+  height: 36px;
   border-radius: 6px;
   background: #d8e8d8;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1rem;
 }
 
-.feed-cell__name {
+.feed-species-row__name {
+  flex: 1;
+  font-size: 13px;
   font-weight: 500;
   color: #1a3a1a;
-  font-size: 11px;
-  line-height: 1.3;
-  min-height: 32px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  margin-top: 4px;
 }
 
 .feed-badge {
-  padding: 0.18rem 0.6rem;
+  padding: 0.18rem 0.55rem;
   border-radius: 20px;
-  color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   white-space: nowrap;
-}
-
-.feed-cell .feed-badge {
-  margin-top: auto;
-  font-size: 10px;
+  flex-shrink: 0;
 }
 
 .feed-card__empty {
@@ -760,9 +744,8 @@
   }
 
   .stats-bar {
-    gap: 0.6rem 1.5rem;
     padding: 0.6rem 1rem;
-    justify-content: space-around;
+    justify-content: center;
   }
 
   .btn--large {
@@ -793,17 +776,4 @@
     width: 100%;
   }
 
-  .feed-cell {
-    width: 72px;
-  }
-
-  .feed-cell__img,
-  .feed-cell__img-placeholder {
-    width: 44px;
-    height: 44px;
-  }
-
-  .feed-cell__name {
-    font-size: 10px;
-  }
 }

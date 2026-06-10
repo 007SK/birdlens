@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api/client.js'
 
-const BADGE_COLORS = {
-  'Very likely': '#4CAF50',
-  'Likely':      '#FF9800',
-  'Possible':    '#607D8B',
+const BADGE_STYLES = {
+  'Very likely': { bg: '#e8f5e9', color: '#2e7d32' },
+  'Likely':      { bg: '#fff8e1', color: '#f57f17' },
+  'Possible':    { bg: '#eceff1', color: '#546e7a' },
 }
 
 function relativeTime(isoString) {
@@ -22,23 +22,23 @@ function relativeTime(isoString) {
   return `${d} ${d === 1 ? 'day' : 'days'} ago`
 }
 
-function FeedSpeciesCell({ species }) {
+function FeedSpeciesRow({ species }) {
   const [imgError, setImgError] = useState(false)
-  const badgeColor = BADGE_COLORS[species.confidence_label] ?? '#607D8B'
+  const badge = BADGE_STYLES[species.confidence_label] ?? BADGE_STYLES['Possible']
 
   return (
-    <div className="feed-cell">
+    <div className="feed-species-row">
       {species.image_url && !imgError
         ? <img
-            className="feed-cell__img"
+            className="feed-species-row__img"
             src={species.image_url}
             alt={species.species_common}
             onError={() => setImgError(true)}
           />
-        : <div className="feed-cell__img-placeholder">🐦</div>
+        : <div className="feed-species-row__img-placeholder">🐦</div>
       }
-      <span className="feed-cell__name">{species.species_common}</span>
-      <span className="feed-badge" style={{ background: badgeColor }}>
+      <span className="feed-species-row__name">{species.species_common}</span>
+      <span className="feed-badge" style={{ background: badge.bg, color: badge.color }}>
         {species.confidence_label}
       </span>
     </div>
@@ -86,9 +86,9 @@ export default function GlobalFeed({ refreshTrigger }) {
                 <div className="feed-card__meta">
                   {icon} {run.duration_seconds}s · {relativeTime(run.created_at)}
                 </div>
-                <div className="feed-card__species-grid">
+                <div className="feed-card__species-list">
                   {detections.map((s) => (
-                    <FeedSpeciesCell key={s.species_common} species={s} />
+                    <FeedSpeciesRow key={s.species_common} species={s} />
                   ))}
                 </div>
               </li>

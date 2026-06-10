@@ -22,29 +22,17 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
       .finally(() => setLoading(false))
   }, [propStats])
 
-  const val = (key) => loading ? '...' : (stats?.[key] ?? '—')
+  const val = (key) => loading ? '…' : (stats?.[key] ?? '—')
 
   return (
     <div className="stats-bar">
       {error && !loading ? (
         <span className="stats-bar__error">Service is starting up, please try again in 30 seconds.</span>
       ) : (
-        <>
-          <span className="stats-bar__item">
-            <span className="stats-bar__icon">🎙</span>
-            <span className="stats-bar__value">{val('total_runs')}</span>
-            <span className="stats-bar__label">Recordings</span>
-          </span>
-          <span className="stats-bar__item">
-            <span className="stats-bar__value">{val('total_detections')}</span>
-            <span className="stats-bar__label">Detections</span>
-          </span>
-          <span className="stats-bar__item">
-            <span className="stats-bar__icon">🐦</span>
-            <span className="stats-bar__value">{val('unique_species')}</span>
-            <span className="stats-bar__label">Species</span>
-          </span>
-        </>
+        <p className="stats-bar__sentence">
+          <span className="stats-bar__chunk">🎙 <strong className="stats-bar__num">{val('total_runs')}</strong> recordings ·&nbsp;</span>
+          <span className="stats-bar__chunk">🐦 <strong className="stats-bar__num">{val('unique_species')}</strong> species discovered</span>
+        </p>
       )}
     </div>
   )
