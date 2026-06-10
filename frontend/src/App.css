@@ -794,6 +794,16 @@
   }
 
   .feed-cell {
-    width: 80px;
+    width: 72px;
+  }
+
+  .feed-cell__img,
+  .feed-cell__img-placeholder {
+    width: 44px;
+    height: 44px;
+  }
+
+  .feed-cell__name {
+    font-size: 10px;
   }
 }
