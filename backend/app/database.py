@@ -105,9 +105,11 @@ def _confidence_label(confidence: float) -> str:
 
 
 def get_feed() -> list[dict]:
-    """Return the last 50 runs with all their detections, ordered by confidence descending."""
+    """Return the 10 most recent runs that have at least one detection, with full detection lists."""
     client = get_supabase_client()
 
+    # Fetch recent runs in bulk, then filter to those with detections.
+    # We over-fetch so we can still return 10 after excluding empty runs.
     runs_result = (
         client.table("runs")
         .select("*")
@@ -126,6 +128,10 @@ def get_feed() -> list[dict]:
         .execute()
     )
 
+    dets_by_run: dict[str, list] = {}
+    for d in dets_result.data:
+        dets_by_run.setdefault(d["run_id"], []).append(d)
+
     scientific_names = list({d["species_scientific"] for d in dets_result.data})
     image_by_species: dict[str, Optional[str]] = {}
     if scientific_names:
@@ -137,17 +143,11 @@ def get_feed() -> list[dict]:
         )
         image_by_species = {r["species_scientific"]: r["image_url"] for r in cache_result.data}
 
-    dets_by_run: dict[str, list] = {}
-    for d in dets_result.data:
-        dets_by_run.setdefault(d["run_id"], []).append(d)
-
     feed = []
     for run in runs_result.data:
-        all_dets = sorted(
-            dets_by_run.get(run["id"], []),
-            key=lambda x: x["confidence"],
-            reverse=True,
-        )
+        run_dets = dets_by_run.get(run["id"], [])
+        if not run_dets:
+            continue
         feed.append(
             {
                 "run_id": run["id"],
@@ -161,10 +161,12 @@ def get_feed() -> list[dict]:
                         "confidence_label": _confidence_label(d["confidence"]),
                         "image_url": image_by_species.get(d["species_scientific"]),
                     }
-                    for d in all_dets
+                    for d in sorted(run_dets, key=lambda x: x["confidence"], reverse=True)
                 ],
             }
         )
+        if len(feed) == 10:
+            break
     return feed
 
 

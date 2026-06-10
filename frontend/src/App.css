@@ -684,16 +684,19 @@
 }
 
 .feed-card__species-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .feed-cell {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
+  width: 90px;
+  flex-shrink: 0;
   text-align: center;
 }
 
@@ -719,12 +722,15 @@
   font-weight: 500;
   color: #1a3a1a;
   font-size: 11px;
+  line-height: 1.3;
+  min-height: 32px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+  margin-top: 4px;
 }
 
 .feed-badge {
@@ -734,6 +740,11 @@
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.feed-cell .feed-badge {
+  margin-top: auto;
+  font-size: 10px;
 }
 
 .feed-card__empty {
@@ -782,7 +793,7 @@
     width: 100%;
   }
 
-  .feed-card__species-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  .feed-cell {
+    width: 80px;
   }
 }
