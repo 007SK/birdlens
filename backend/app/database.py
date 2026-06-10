@@ -96,15 +96,23 @@ def save_species_cache(
     ).execute()
 
 
+def _confidence_label(confidence: float) -> str:
+    if confidence >= 0.75:
+        return "Very likely"
+    if confidence >= 0.55:
+        return "Likely"
+    return "Possible"
+
+
 def get_feed() -> list[dict]:
-    """Return the last 10 runs with their top 2 detections, including cached image URLs."""
+    """Return the last 50 runs with all their detections, ordered by confidence descending."""
     client = get_supabase_client()
 
     runs_result = (
         client.table("runs")
         .select("*")
         .order("created_at", desc=True)
-        .limit(10)
+        .limit(50)
         .execute()
     )
     if not runs_result.data:
@@ -118,7 +126,6 @@ def get_feed() -> list[dict]:
         .execute()
     )
 
-    # Look up image URLs for all unique scientific names in one query
     scientific_names = list({d["species_scientific"] for d in dets_result.data})
     image_by_species: dict[str, Optional[str]] = {}
     if scientific_names:
@@ -130,31 +137,31 @@ def get_feed() -> list[dict]:
         )
         image_by_species = {r["species_scientific"]: r["image_url"] for r in cache_result.data}
 
-    # Group detections by run_id
     dets_by_run: dict[str, list] = {}
     for d in dets_result.data:
         dets_by_run.setdefault(d["run_id"], []).append(d)
 
     feed = []
     for run in runs_result.data:
-        top = sorted(
+        all_dets = sorted(
             dets_by_run.get(run["id"], []),
             key=lambda x: x["confidence"],
             reverse=True,
-        )[:2]
+        )
         feed.append(
             {
                 "run_id": run["id"],
                 "created_at": run["created_at"],
                 "duration_seconds": run["duration_seconds"],
                 "source": run["source"],
-                "top_species": [
+                "detections": [
                     {
                         "species_common": d["species_common"],
                         "confidence": d["confidence"],
+                        "confidence_label": _confidence_label(d["confidence"]),
                         "image_url": image_by_species.get(d["species_scientific"]),
                     }
-                    for d in top
+                    for d in all_dets
                 ],
             }
         )

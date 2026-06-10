@@ -7,12 +7,6 @@ const BADGE_COLORS = {
   'Possible':    '#607D8B',
 }
 
-function confidenceLabel(conf) {
-  if (conf >= 0.75) return 'Very likely'
-  if (conf >= 0.55) return 'Likely'
-  return 'Possible'
-}
-
 function relativeTime(isoString) {
   const diff = Math.floor((Date.now() - new Date(isoString)) / 1000)
   if (diff < 60)  return 'just now'
@@ -28,24 +22,25 @@ function relativeTime(isoString) {
   return `${d} ${d === 1 ? 'day' : 'days'} ago`
 }
 
-function FeedSpeciesRow({ species }) {
+function FeedSpeciesCell({ species }) {
   const [imgError, setImgError] = useState(false)
-  const label = confidenceLabel(species.confidence)
-  const badgeColor = BADGE_COLORS[label]
+  const badgeColor = BADGE_COLORS[species.confidence_label] ?? '#607D8B'
 
   return (
-    <div className="feed-card__species-row">
+    <div className="feed-cell">
       {species.image_url && !imgError
         ? <img
-            className="feed-card__img"
+            className="feed-cell__img"
             src={species.image_url}
             alt={species.species_common}
             onError={() => setImgError(true)}
           />
-        : <div className="feed-card__img-placeholder">🐦</div>
+        : <div className="feed-cell__img-placeholder">🐦</div>
       }
-      <span className="feed-card__name">{species.species_common}</span>
-      <span className="feed-badge" style={{ background: badgeColor }}>{label}</span>
+      <span className="feed-cell__name">{species.species_common}</span>
+      <span className="feed-badge" style={{ background: badgeColor }}>
+        {species.confidence_label}
+      </span>
     </div>
   )
 }
@@ -64,6 +59,8 @@ export default function GlobalFeed({ refreshTrigger }) {
       .finally(() => setLoading(false))
   }, [refreshTrigger])
 
+  const runsWithDetections = runs.filter((run) => (run.detections ?? []).length > 0)
+
   return (
     <section className="global-feed">
       <h2 className="global-feed__heading">Recent detections from all visitors</h2>
@@ -74,27 +71,26 @@ export default function GlobalFeed({ refreshTrigger }) {
         <p className="global-feed__empty">Service is starting up, please try again in 30 seconds.</p>
       )}
 
-      {!loading && !error && runs.length === 0 && (
+      {!loading && !error && runsWithDetections.length === 0 && (
         <p className="global-feed__empty">No recordings yet. Be the first.</p>
       )}
 
-      {!loading && !error && runs.length > 0 && (
+      {!loading && !error && runsWithDetections.length > 0 && (
         <ul className="global-feed__list">
-          {runs.filter((run) => (run.top_species ?? []).length > 0).slice(0, 10).map((run) => {
+          {runsWithDetections.map((run) => {
             const icon = run.source === 'mic' ? '🎙' : '⬆️'
-            const topSpecies = run.top_species ?? []
+            const detections = run.detections ?? []
 
             return (
               <li key={run.run_id} className="feed-card">
                 <div className="feed-card__meta">
                   {icon} {run.duration_seconds}s · {relativeTime(run.created_at)}
                 </div>
-                {topSpecies.length === 0
-                  ? <p className="feed-card__empty">No detections above threshold</p>
-                  : topSpecies.map((s) => (
-                      <FeedSpeciesRow key={s.species_common} species={s} />
-                    ))
-                }
+                <div className="feed-card__species-grid">
+                  {detections.map((s) => (
+                    <FeedSpeciesCell key={s.species_common} species={s} />
+                  ))}
+                </div>
               </li>
             )
           })}

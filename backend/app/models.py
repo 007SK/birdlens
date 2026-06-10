@@ -25,9 +25,10 @@ class AnalyzeResponse(BaseModel):
     stats: StatsOut
 
 
-class TopSpeciesOut(BaseModel):
+class FeedDetectionOut(BaseModel):
     species_common: str
     confidence: float
+    confidence_label: str
     image_url: Optional[str] = None
 
 
@@ -36,7 +37,7 @@ class FeedRunOut(BaseModel):
     created_at: str
     duration_seconds: int
     source: str
-    top_species: list[TopSpeciesOut]
+    detections: list[FeedDetectionOut]
 
 
 class FeedResponse(BaseModel):
