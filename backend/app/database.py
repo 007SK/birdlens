@@ -20,6 +20,7 @@ def save_run(
     detection_count: int,
     lat: Optional[float] = None,
     lon: Optional[float] = None,
+    location_label: Optional[str] = None,
 ) -> str:
     """Insert a new run row and return its generated UUID."""
     supabase = get_supabase_client()
@@ -33,6 +34,8 @@ def save_run(
         row["lat"] = lat
     if lon is not None:
         row["lon"] = lon
+    if location_label is not None:
+        row["location_label"] = location_label
 
     result = supabase.table("runs").insert(row).execute()
     return result.data[0]["id"]

@@ -74,6 +74,7 @@ export default function RecordTab({ onResult }) {
       const loc = JSON.parse(localStorage.getItem('birdlens_location') ?? 'null')
       if (loc?.lat != null) form.append('lat', loc.lat)
       if (loc?.lon != null) form.append('lon', loc.lon)
+      if (loc?.text) form.append('location_label', loc.text)
     } catch {}
     try {
       const data = await api.analyze(form)

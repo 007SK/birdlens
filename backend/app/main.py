@@ -47,6 +47,7 @@ async def analyze(
     source: str = Form(...),
     lat: Optional[float] = Form(None),
     lon: Optional[float] = Form(None),
+    location_label: Optional[str] = Form(None),
 ) -> dict:
     """Accept an audio clip, run BirdNET, persist results, return detections."""
     if duration > 30:
@@ -148,6 +149,7 @@ async def analyze(
                 detection_count=len(enriched),
                 lat=lat,
                 lon=lon,
+                location_label=location_label,
             )
         except Exception as e:
             print(f"save_run failed: {e}")
