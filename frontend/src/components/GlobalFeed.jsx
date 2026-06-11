@@ -68,7 +68,7 @@ export default function GlobalFeed({ refreshTrigger }) {
       {loading && <p className="global-feed__loading">Loading…</p>}
 
       {!loading && error && (
-        <p className="global-feed__empty">Service is starting up, please try again in 30 seconds.</p>
+        <p className="global-feed__empty">Unable to load — please refresh the page</p>
       )}
 
       {!loading && !error && runsWithDetections.length === 0 && (

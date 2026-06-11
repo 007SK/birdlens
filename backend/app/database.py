@@ -6,17 +6,11 @@ from supabase import create_client, Client
 
 
 def get_supabase_client() -> Client:
-    """Return a fresh Supabase client with HTTP/2 disabled to prevent idle connection errors.
-
-    A new instance is created on each call so connections never go stale between requests.
-    """
-    url = os.environ["SUPABASE_URL"]
-    key = os.environ["SUPABASE_SERVICE_KEY"]
-    try:
-        from supabase.lib.client_options import ClientOptions
-        return create_client(url, key, options=ClientOptions(httpx_client_args={"http2": False}))
-    except (ImportError, TypeError):
-        return create_client(url, key)
+    """Return a fresh Supabase client on every call to avoid stale HTTP connections."""
+    return create_client(
+        os.environ["SUPABASE_URL"],
+        os.environ["SUPABASE_SERVICE_KEY"],
+    )
 
 
 def save_run(
@@ -28,6 +22,7 @@ def save_run(
     lon: Optional[float] = None,
 ) -> str:
     """Insert a new run row and return its generated UUID."""
+    supabase = get_supabase_client()
     row: dict = {
         "duration_seconds": duration_seconds,
         "source": source,
@@ -39,7 +34,7 @@ def save_run(
     if lon is not None:
         row["lon"] = lon
 
-    result = get_supabase_client().table("runs").insert(row).execute()
+    result = supabase.table("runs").insert(row).execute()
     return result.data[0]["id"]
 
 
@@ -47,6 +42,7 @@ def save_detections(run_id: str, detections: list[dict]) -> None:
     """Bulk-insert detection rows for a run."""
     if not detections:
         return
+    supabase = get_supabase_client()
     rows = [
         {
             "run_id": run_id,
@@ -56,7 +52,7 @@ def save_detections(run_id: str, detections: list[dict]) -> None:
         }
         for d in detections
     ]
-    get_supabase_client().table("detections").insert(rows).execute()
+    supabase.table("detections").insert(rows).execute()
 
 
 def get_or_cache_species(species_scientific: str) -> Optional[dict]:
@@ -66,8 +62,9 @@ def get_or_cache_species(species_scientific: str) -> Optional[dict]:
     that the enrichment pipeline re-fetches it (handles the pre-existing
     NULL rows from earlier runs without manual deletion).
     """
+    supabase = get_supabase_client()
     result = (
-        get_supabase_client()
+        supabase
         .table("species_cache")
         .select("*")
         .eq("species_scientific", species_scientific)
@@ -88,7 +85,8 @@ def save_species_cache(
     fun_fact: Optional[str],
 ) -> None:
     """Upsert a species enrichment record into the cache."""
-    get_supabase_client().table("species_cache").upsert(
+    supabase = get_supabase_client()
+    supabase.table("species_cache").upsert(
         {
             "species_scientific": species_scientific,
             "species_common": species_common,
@@ -108,12 +106,11 @@ def _confidence_label(confidence: float) -> str:
 
 def get_feed() -> list[dict]:
     """Return the 10 most recent runs that have at least one detection, with full detection lists."""
-    client = get_supabase_client()
+    supabase = get_supabase_client()
 
-    # Fetch recent runs in bulk, then filter to those with detections.
-    # We over-fetch so we can still return 10 after excluding empty runs.
+    # Over-fetch runs so we can still return 10 after excluding empty runs.
     runs_result = (
-        client.table("runs")
+        supabase.table("runs")
         .select("*")
         .order("created_at", desc=True)
         .limit(50)
@@ -124,7 +121,7 @@ def get_feed() -> list[dict]:
 
     run_ids = [r["id"] for r in runs_result.data]
     dets_result = (
-        client.table("detections")
+        supabase.table("detections")
         .select("run_id, species_common, species_scientific, confidence")
         .in_("run_id", run_ids)
         .execute()
@@ -138,7 +135,7 @@ def get_feed() -> list[dict]:
     image_by_species: dict[str, Optional[str]] = {}
     if scientific_names:
         cache_result = (
-            client.table("species_cache")
+            supabase.table("species_cache")
             .select("species_scientific, image_url")
             .in_("species_scientific", scientific_names)
             .execute()
@@ -174,12 +171,12 @@ def get_feed() -> list[dict]:
 
 def get_stats() -> dict:
     """Return aggregate counts for the stats bar."""
-    client = get_supabase_client()
+    supabase = get_supabase_client()
 
-    runs_result = client.table("runs").select("id").execute()
+    runs_result = supabase.table("runs").select("id").execute()
     total_runs = len(runs_result.data)
 
-    dets_result = client.table("detections").select("id, species_scientific").execute()
+    dets_result = supabase.table("detections").select("id, species_scientific").execute()
     total_detections = len(dets_result.data)
     unique_species = (
         len({d["species_scientific"] for d in dets_result.data})

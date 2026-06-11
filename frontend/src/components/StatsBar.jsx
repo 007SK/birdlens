@@ -27,7 +27,7 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
   return (
     <div className="stats-bar">
       {error && !loading ? (
-        <span className="stats-bar__error">Service is starting up, please try again in 30 seconds.</span>
+        <span className="stats-bar__error">Unable to load — please refresh the page</span>
       ) : (
         <p className="stats-bar__sentence">
           <span className="stats-bar__chunk">🎙 <strong className="stats-bar__num">{val('total_runs')}</strong> recordings ·&nbsp;</span>
