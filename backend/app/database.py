@@ -4,17 +4,19 @@ from typing import Optional
 
 from supabase import create_client, Client
 
-_client: Optional[Client] = None
-
 
 def get_supabase_client() -> Client:
-    """Return a cached Supabase client, creating it on first call."""
-    global _client
-    if _client is None:
-        url = os.environ["SUPABASE_URL"]
-        key = os.environ["SUPABASE_SERVICE_KEY"]
-        _client = create_client(url, key)
-    return _client
+    """Return a fresh Supabase client with HTTP/2 disabled to prevent idle connection errors.
+
+    A new instance is created on each call so connections never go stale between requests.
+    """
+    url = os.environ["SUPABASE_URL"]
+    key = os.environ["SUPABASE_SERVICE_KEY"]
+    try:
+        from supabase.lib.client_options import ClientOptions
+        return create_client(url, key, options=ClientOptions(httpx_client_args={"http2": False}))
+    except (ImportError, TypeError):
+        return create_client(url, key)
 
 
 def save_run(

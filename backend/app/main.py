@@ -114,12 +114,15 @@ async def analyze(
                 enrichment_data = await enrichment.fetch_species_enrichment(
                     d["species_scientific"], d["species_common"]
                 )
-                database.save_species_cache(
-                    d["species_scientific"],
-                    d["species_common"],
-                    enrichment_data["image_url"],
-                    enrichment_data["fun_fact"],
-                )
+                try:
+                    database.save_species_cache(
+                        d["species_scientific"],
+                        d["species_common"],
+                        enrichment_data["image_url"],
+                        enrichment_data["fun_fact"],
+                    )
+                except Exception as e:
+                    print(f"Cache write failed for {d['species_scientific']}: {e}")
                 image_url = enrichment_data["image_url"]
                 fun_fact = enrichment_data["fun_fact"]
             else:
@@ -135,18 +138,30 @@ async def analyze(
                 }
             )
 
-        # Persist run and detections
-        run_id = database.save_run(
-            duration_seconds=duration,
-            source=source,
-            species_count=len(enriched),
-            detection_count=len(enriched),
-            lat=lat,
-            lon=lon,
-        )
-        database.save_detections(run_id, enriched)
+        # Persist run and detections — failures must not kill the response
+        run_id = temp_id  # fallback: use the temp UUID if DB write fails
+        try:
+            run_id = database.save_run(
+                duration_seconds=duration,
+                source=source,
+                species_count=len(enriched),
+                detection_count=len(enriched),
+                lat=lat,
+                lon=lon,
+            )
+        except Exception as e:
+            print(f"save_run failed: {e}")
 
-        stats = database.get_stats()
+        try:
+            database.save_detections(run_id, enriched)
+        except Exception as e:
+            print(f"save_detections failed: {e}")
+
+        try:
+            stats = database.get_stats()
+        except Exception as e:
+            print(f"get_stats failed: {e}")
+            stats = {"total_runs": 0, "total_detections": 0, "unique_species": 0}
 
         return {
             "run_id": run_id,
