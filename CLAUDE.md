@@ -215,6 +215,26 @@ Dockerfile for HF Spaces → environment variable wiring → Vercel deploy → e
 
 ---
 
+## Post-Launch Fixes (2026-06-05 → 2026-06-12)
+
+- **README + repo cleanup** — replaced placeholder README with live demo link, architecture, local dev steps, attribution; added `frontend/.env.example`; app screenshot added to docs/
+
+- **Feed backend** — `get_feed()` rewrote to return last 10 runs *with detections only* (filter at Python level after over-fetching 50); all detections per run returned (not just top 2); detections ordered by confidence descending; `confidence_label` computed server-side; renamed `top_species` → `detections` throughout
+
+- **Feed frontend** — species layout iterated: horizontal grid cells → list rows per species (36×36 image, name flex:1 so long names like "Malabar Whistling-Thrush" wrap naturally, right-aligned badge); badges switched from solid colour to soft bg+text (`#e8f5e9/#2e7d32`, `#fff8e1/#f57f17`, `#eceff1/#546e7a`)
+
+- **Stats bar** — simplified from three separate stat items to one sentence: "🎙 X recordings · 🐦 Y species discovered"; wraps cleanly on mobile
+
+- **Mobile CSS** — species cells scale to 72px/44px image on viewports < 480px; stats bar centered (not space-around)
+
+- **Supabase connection errors** — fixed `httpx.RemoteProtocolError: ConnectionTerminated` (HTTP/2 idle connections); solution: `get_supabase_client()` now creates a fresh `create_client()` instance on every call — no singleton, no stale connections; all DB writes in `main.py` wrapped in `try/except` so analysis result is always returned even if Supabase is unreachable
+
+- **Error messages** — stats bar and feed failures now say "Unable to load — please refresh the page"; "Service is starting up" reserved for /analyze cold-start errors only
+
+- **Location label** — `location_label` (human-readable text, e.g. "Dharamshala, India") saved per run alongside lat/lon; read from `birdlens_location` localStorage in RecordTab + UploadTab, accepted as optional form field in `/analyze`, stored in `runs` table for V2 use
+
+---
+
 ## Live URLs
 
 - **Frontend:** https://birdlens.vercel.app
