@@ -207,13 +207,13 @@
 }
 
 .location-display {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.55rem 0.85rem;
+  padding: 6px 14px;
   background: #f0f7f0;
   border: 1px solid #b0ccb0;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 0.9rem;
 }
 
@@ -735,6 +735,166 @@
   font-size: 0.85rem;
   color: #8aaa8a;
   margin: 0;
+}
+
+/* ── SpeciesFound / Discovery rows ── */
+.discovery-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid #eaf3ea;
+  list-style: none;
+}
+
+.discovery-row:last-child {
+  border-bottom: none;
+}
+
+.discovery-row__img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #d8e8d8;
+}
+
+.discovery-row__img-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: #d8e8d8;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.discovery-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.discovery-row__common {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a3a1a;
+}
+
+.discovery-row__scientific {
+  font-style: italic;
+  font-size: 12px;
+  color: #6a8a6a;
+}
+
+.discovery-row__location {
+  display: inline-block;
+  background: #e8f5e2;
+  color: #2e7d32;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.discovery-row__meta {
+  font-size: 11px;
+  color: #9ab09a;
+}
+
+/* ── Footer layout ── */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.footer-attribution {
+  margin: 0;
+}
+
+.footer-branding {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.footer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+.footer-card {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #d0e8d0;
+  border-radius: 12px;
+  padding: 16px;
+  width: 280px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  z-index: 200;
+}
+
+.footer-card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
+}
+
+.footer-card__name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a3a1a;
+  margin: 0 0 2px;
+}
+
+.footer-card__title {
+  font-size: 0.82rem;
+  color: #6a8a6a;
+  margin: 0 0 10px;
+}
+
+.footer-card__quote {
+  font-style: italic;
+  font-size: 0.82rem;
+  color: #6a8a6a;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.footer-card__links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.footer-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #2a6a2a;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.footer-card__link:hover {
+  text-decoration: underline;
 }
 
 /* ── Mobile responsiveness ── */

@@ -172,6 +172,60 @@ def get_feed() -> list[dict]:
     return feed
 
 
+def get_discoveries() -> list[dict]:
+    """Return all unique species ever detected with aggregate stats and most recent location."""
+    supabase = get_supabase_client()
+
+    dets = supabase.table("detections").select("species_common, species_scientific, run_id, created_at").execute().data
+    if not dets:
+        return []
+
+    agg: dict[str, dict] = {}
+    for d in dets:
+        sci = d["species_scientific"]
+        if sci not in agg:
+            agg[sci] = {
+                "species_common": d["species_common"],
+                "species_scientific": sci,
+                "count": 0,
+                "last": d["created_at"],
+                "run_ids": [],
+            }
+        agg[sci]["count"] += 1
+        if d["created_at"] > agg[sci]["last"]:
+            agg[sci]["last"] = d["created_at"]
+        agg[sci]["run_ids"].append(d["run_id"])
+
+    sci_names = list(agg.keys())
+    cache = supabase.table("species_cache").select("species_scientific, image_url").in_("species_scientific", sci_names).execute().data
+    image_map = {r["species_scientific"]: r["image_url"] for r in cache}
+
+    runs_all = supabase.table("runs").select("id, location_label, created_at").execute().data
+    loc_by_run = {r["id"]: (r["location_label"], r["created_at"]) for r in runs_all if r.get("location_label")}
+
+    results = []
+    for sci, info in agg.items():
+        location_label = None
+        best_ts: Optional[str] = None
+        for rid in info["run_ids"]:
+            if rid in loc_by_run:
+                loc, ts = loc_by_run[rid]
+                if best_ts is None or ts > best_ts:
+                    location_label = loc
+                    best_ts = ts
+        results.append({
+            "species_common": info["species_common"],
+            "species_scientific": sci,
+            "image_url": image_map.get(sci),
+            "total_detections": info["count"],
+            "last_detected": info["last"],
+            "location_label": location_label,
+        })
+
+    results.sort(key=lambda x: x["last_detected"], reverse=True)
+    return results
+
+
 def get_stats() -> dict:
     """Return aggregate counts for the stats bar."""
     supabase = get_supabase_client()

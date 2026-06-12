@@ -6,6 +6,8 @@ import UploadTab from './components/UploadTab.jsx'
 import ResultsCard from './components/ResultsCard.jsx'
 import GlobalFeed from './components/GlobalFeed.jsx'
 import LocationInput from './components/LocationInput.jsx'
+import SpeciesFound from './components/SpeciesFound.jsx'
+import Footer from './components/Footer.jsx'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('record')
@@ -45,32 +47,31 @@ export default function App() {
               className={`tab ${activeTab === 'upload' ? 'tab--active' : ''}`}
               onClick={() => setActiveTab('upload')}
             >
-              Upload
+              Upload Audio File
+            </button>
+            <button
+              className={`tab ${activeTab === 'species' ? 'tab--active' : ''}`}
+              onClick={() => setActiveTab('species')}
+            >
+              Species Found
             </button>
           </div>
           <div className="tab-panel">
-            {activeTab === 'record'
-              ? <RecordTab onResult={handleResult} />
-              : <UploadTab onResult={handleResult} />
+            {activeTab === 'species'
+              ? <SpeciesFound />
+              : activeTab === 'record'
+                ? <RecordTab onResult={handleResult} />
+                : <UploadTab onResult={handleResult} />
             }
           </div>
         </section>
 
-        {result && <ResultsCard result={result} />}
+        {activeTab !== 'species' && result && <ResultsCard result={result} />}
 
         <GlobalFeed refreshTrigger={feedTick} />
       </main>
 
-      <footer className="app-footer">
-        <p>
-          Bird identification powered by{' '}
-          <a href="https://github.com/birdnet-team/BirdNET-Analyzer" target="_blank" rel="noreferrer">
-            BirdNET-Analyzer
-          </a>
-          {' · '}
-          <a href="#" target="_blank" rel="noreferrer">GitHub</a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   )
 }

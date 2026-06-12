@@ -42,3 +42,16 @@ class FeedRunOut(BaseModel):
 
 class FeedResponse(BaseModel):
     runs: list[FeedRunOut]
+
+
+class DiscoveryOut(BaseModel):
+    species_common: str
+    species_scientific: str
+    image_url: Optional[str] = None
+    total_detections: int
+    last_detected: str
+    location_label: Optional[str] = None
+
+
+class DiscoveriesResponse(BaseModel):
+    species: list[DiscoveryOut]

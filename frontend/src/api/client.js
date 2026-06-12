@@ -15,7 +15,8 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  getStats: () => request('/stats'),
-  getFeed:  () => request('/feed'),
-  analyze:  (formData) => request('/analyze', { method: 'POST', body: formData }),
+  getStats:       () => request('/stats'),
+  getFeed:        () => request('/feed'),
+  getDiscoveries: () => request('/discoveries'),
+  analyze:        (formData) => request('/analyze', { method: 'POST', body: formData }),
 }

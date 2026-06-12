@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()  # reads backend/.env before any module accesses os.environ
 
 from app import analyzer, database, enrichment  # noqa: E402 — must come after load_dotenv
-from app.models import AnalyzeResponse, FeedResponse, StatsOut  # noqa: E402
+from app.models import AnalyzeResponse, DiscoveriesResponse, FeedResponse, StatsOut  # noqa: E402
 
 app = FastAPI(title="BirdLens API")
 
@@ -176,6 +176,17 @@ async def analyze(
         for path in (original_path, wav_path):
             if path and os.path.exists(path):
                 os.remove(path)
+
+
+@app.get("/discoveries", response_model=DiscoveriesResponse)
+async def discoveries() -> dict:
+    """Return all unique species ever detected with aggregate stats."""
+    try:
+        species = database.get_discoveries()
+    except Exception as e:
+        print(f"get_discoveries failed: {e}")
+        species = []
+    return {"species": species}
 
 
 @app.get("/feed", response_model=FeedResponse)
