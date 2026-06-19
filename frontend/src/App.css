@@ -16,7 +16,7 @@
   color: #e8f5e8;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 0.55rem 1rem;
   font-size: 0.85rem;
 }
@@ -138,11 +138,61 @@
   font-size: 0.98rem;
 }
 
+.app-byline-wrap {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
 .app-byline {
   font-size: 12px;
   color: #9ab09a;
   margin-top: 2px;
   text-align: center;
+  user-select: none;
+}
+
+.byline-tooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #d0e8d0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  width: 300px;
+  text-align: left;
+  z-index: 300;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.byline-tooltip__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.byline-tooltip__photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.byline-tooltip__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a3a1a;
+}
+
+.byline-tooltip__story {
+  font-size: 12px;
+  color: #6a8a6a;
+  line-height: 1.55;
+  margin: 0;
 }
 
 /* ── Main ── */
@@ -442,7 +492,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  align-items: flex-start;
+  align-items: center;
   padding: 1.25rem;
   background: #fff;
   border-radius: 10px;
@@ -889,6 +939,17 @@
   color: #9ab09a;
 }
 
+/* ── Record hero (centred primary action area) ── */
+.record-hero {
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+
 /* ── Back link ── */
 .back-link {
   background: none;
@@ -1034,33 +1095,90 @@
 }
 
 .footer-branding {
-  position: relative;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-photo-wrap {
+  position: relative;
+  cursor: pointer;
 }
 
 .footer-avatar {
-  width: 36px;
-  height: 36px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
   display: block;
 }
 
-.footer-card {
+.footer-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.footer-icon-link {
+  color: #9ab09a;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.footer-icon-link:hover {
+  color: #1a3a1a;
+}
+
+/* ── Branding tooltip (footer photo hover) ── */
+.branding-tooltip {
   position: absolute;
-  bottom: calc(100% + 10px);
-  right: 0;
   background: #fff;
   border: 1px solid #d0e8d0;
   border-radius: 12px;
-  padding: 16px;
-  width: 280px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-  text-align: center;
+  padding: 14px 16px;
+  width: 260px;
+  text-align: left;
   z-index: 200;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
+
+.branding-tooltip--above {
+  bottom: calc(100% + 10px);
+  right: 0;
+}
+
+.branding-tooltip__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.branding-tooltip__photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.branding-tooltip__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a3a1a;
+}
+
+.branding-tooltip__story {
+  font-size: 12px;
+  color: #6a8a6a;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* footer-card removed — replaced by branding-tooltip */
 
 .footer-card__avatar {
   width: 64px;
