@@ -9,6 +9,7 @@ const LI_PATH = "M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v1
 export default function Footer() {
   const [tooltipOpen, setTooltipOpen] = useState(false)
   const photoWrapRef = useRef(null)
+  const closeTimerRef = useRef(null)
 
   useEffect(() => {
     if (!tooltipOpen) return
@@ -20,6 +21,15 @@ export default function Footer() {
     document.addEventListener('mousedown', onMouseDown)
     return () => document.removeEventListener('mousedown', onMouseDown)
   }, [tooltipOpen])
+
+  function photoEnter() {
+    clearTimeout(closeTimerRef.current)
+    setTooltipOpen(true)
+  }
+
+  function photoLeave() {
+    closeTimerRef.current = setTimeout(() => setTooltipOpen(false), 150)
+  }
 
   return (
     <footer className="app-footer">
@@ -36,28 +46,11 @@ export default function Footer() {
       </div>
 
       <div className="footer-branding-row">
-        <div
-          className="footer-photo-wrap"
-          ref={photoWrapRef}
-          onClick={() => setTooltipOpen(o => !o)}
-        >
-          {tooltipOpen && (
-            <div className="branding-tooltip branding-tooltip--above">
-              <div className="branding-tooltip__header">
-                <img src={swatiPhoto} alt="Swati Kumari" className="branding-tooltip__photo" />
-                <span className="branding-tooltip__name">Swati Kumari</span>
-              </div>
-              <p className="branding-tooltip__story">{STORY}</p>
-            </div>
-          )}
-          <img src={swatiPhoto} alt="Swati Kumari" className="footer-avatar" />
-        </div>
         <a
           href="https://github.com/007SK"
           target="_blank"
           rel="noreferrer"
           className="footer-icon-link"
-          onClick={e => e.stopPropagation()}
         >
           <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d={GH_PATH} />
@@ -68,12 +61,33 @@ export default function Footer() {
           target="_blank"
           rel="noreferrer"
           className="footer-icon-link"
-          onClick={e => e.stopPropagation()}
         >
           <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d={LI_PATH} />
           </svg>
         </a>
+        <div
+          className="footer-photo-wrap"
+          ref={photoWrapRef}
+          onMouseEnter={photoEnter}
+          onMouseLeave={photoLeave}
+          onClick={() => setTooltipOpen(o => !o)}
+        >
+          {tooltipOpen && (
+            <div
+              className="branding-tooltip branding-tooltip--above"
+              onMouseEnter={photoEnter}
+              onMouseLeave={photoLeave}
+            >
+              <div className="branding-tooltip__header">
+                <img src={swatiPhoto} alt="Swati Kumari" className="branding-tooltip__photo" />
+                <span className="branding-tooltip__name">Swati Kumari</span>
+              </div>
+              <p className="branding-tooltip__story">{STORY}</p>
+            </div>
+          )}
+          <img src={swatiPhoto} alt="Swati Kumari" className="footer-avatar" />
+        </div>
       </div>
     </footer>
   )
