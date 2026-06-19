@@ -8,9 +8,10 @@ import GlobalFeed from './components/GlobalFeed.jsx'
 import LocationInput from './components/LocationInput.jsx'
 import SpeciesFound from './components/SpeciesFound.jsx'
 import Footer from './components/Footer.jsx'
+import SecondaryActions from './components/SecondaryActions.jsx'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('record')
+  const [view, setView] = useState('record') // 'record' | 'upload' | 'species'
   const [result, setResult] = useState(null)
   const [stats, setStats] = useState(null)
   const [feedTick, setFeedTick] = useState(0)
@@ -27,46 +28,34 @@ export default function App() {
 
       <header className="app-header">
         <h1 className="app-title">BirdLens</h1>
-        <p className="app-tagline">Record or upload audio and discover the birds around you</p>
+        <p className="app-byline">Built by Swati 🌻</p>
       </header>
 
       <main className="app-main">
-        <section className="location-section">
-          <LocationInput />
-        </section>
+        {view !== 'record' && (
+          <button className="back-link" onClick={() => setView('record')}>
+            ← Back to recording
+          </button>
+        )}
 
-        <section className="capture-section">
-          <div className="capture-tabs">
-            <button
-              className={`tab ${activeTab === 'record' ? 'tab--active' : ''}`}
-              onClick={() => setActiveTab('record')}
-            >
-              Record
-            </button>
-            <button
-              className={`tab ${activeTab === 'upload' ? 'tab--active' : ''}`}
-              onClick={() => setActiveTab('upload')}
-            >
-              Upload Audio File
-            </button>
-            <button
-              className={`tab ${activeTab === 'species' ? 'tab--active' : ''}`}
-              onClick={() => setActiveTab('species')}
-            >
-              Species Found
-            </button>
-          </div>
-          <div className="tab-panel">
-            {activeTab === 'species'
-              ? <SpeciesFound />
-              : activeTab === 'record'
-                ? <RecordTab onResult={handleResult} />
-                : <UploadTab onResult={handleResult} />
-            }
-          </div>
-        </section>
+        {view === 'record' && (
+          <>
+            <RecordTab onResult={handleResult} />
+            <LocationInput />
+            <SecondaryActions
+              onUpload={() => setView('upload')}
+              onSpecies={() => setView('species')}
+            />
+          </>
+        )}
 
-        {activeTab !== 'species' && result && <ResultsCard result={result} />}
+        {view === 'upload' && (
+          <UploadTab onResult={(data) => { handleResult(data); setView('record') }} />
+        )}
+
+        {view === 'species' && <SpeciesFound />}
+
+        {view !== 'species' && result && <ResultsCard result={result} />}
 
         <GlobalFeed refreshTrigger={feedTick} />
       </main>

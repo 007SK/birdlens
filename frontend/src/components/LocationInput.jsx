@@ -25,7 +25,7 @@ function extractCityCountry(address) {
 export default function LocationInput() {
   const stored = readStored()
   const [saved, setSaved] = useState(stored?.text ?? '')
-  const [editing, setEditing] = useState(!stored)
+  const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(stored?.text ?? '')
   const [geoError, setGeoError] = useState('')
   const [geoLoading, setGeoLoading] = useState(false)
@@ -170,6 +170,7 @@ export default function LocationInput() {
     setTimeout(() => inputRef.current?.focus(), 0)
   }
 
+  // Location saved, not editing → pill
   if (!editing && saved) {
     return (
       <div className="location-display">
@@ -181,6 +182,24 @@ export default function LocationInput() {
     )
   }
 
+  // No location saved, not editing → placeholder box
+  if (!editing && !saved) {
+    return (
+      <>
+        <div
+          className="location-placeholder"
+          onClick={() => { setEditing(true); setTimeout(() => inputRef.current?.focus(), 0) }}
+        >
+          <span className="location-placeholder__icon">📍</span>
+          <span className="location-placeholder__text">Set your location</span>
+          <span className="location-placeholder__optional">optional</span>
+        </div>
+        <p className="location-caption">Helps identify birds local to your area</p>
+      </>
+    )
+  }
+
+  // Editing state (either setting new or changing existing)
   return (
     <div className="location-form-wrap" ref={wrapRef}>
       <form className="location-form" onSubmit={handleSubmit}>

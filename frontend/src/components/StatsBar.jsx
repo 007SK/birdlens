@@ -46,7 +46,7 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
         ) : (
           <p className="stats-bar__sentence">
             <span className="stats-bar__chunk">🎙 <strong className="stats-bar__num">{val('total_runs')}</strong> recordings ·&nbsp;</span>
-            <span className="stats-bar__chunk">🐦 <strong className="stats-bar__num">{val('unique_species')}</strong> species discovered</span>
+            <span className="stats-bar__chunk">🐦 <strong className="stats-bar__num">{val('unique_species')}</strong> unique species discovered</span>
           </p>
         )}
         <button
@@ -62,7 +62,7 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
           <div className="stats-bar-card__body">
             <p className="stats-bar-card__name">Swati Kumari</p>
             <p className="stats-bar-card__story">
-              Since moving to the mountains, I kept hearing birds I couldn't name — so I built this.
+              When I moved from the city to the mountains, traffic sounds got replaced by birdsong I couldn't recognize. I'm a nature lover who likes building things, so I set up this platform to try it out myself, and I've since learned 25+ new species just from their calls.
             </p>
             <div className="stats-bar-card__links">
               <a href="https://github.com/007SK" target="_blank" rel="noreferrer" className="stats-bar-card__link">
@@ -71,7 +71,7 @@ export default function StatsBar({ stats: propStats, onStatsLoaded }) {
                 </svg>
                 GitHub
               </a>
-              <a href="#" target="_blank" rel="noreferrer" className="stats-bar-card__link">
+              <a href="https://www.linkedin.com/in/007sk/" target="_blank" rel="noreferrer" className="stats-bar-card__link">
                 <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                   <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
                 </svg>
