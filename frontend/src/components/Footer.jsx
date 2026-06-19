@@ -23,19 +23,17 @@ export default function Footer() {
 
   return (
     <footer className="app-footer">
-      <div className="footer-main">
-        <p className="footer-tagline">Built in the Himalayas, for anyone curious about the birds outside their window.</p>
-        <p className="footer-attribution">
-          Bird identification powered by{' '}
-          <a href="https://github.com/birdnet-team/BirdNET-Analyzer" target="_blank" rel="noreferrer">
-            BirdNET-Analyzer
-          </a>
-          {' · '}
-          <a href="https://github.com/007SK" target="_blank" rel="noreferrer">GitHub</a>
-        </p>
-      </div>
+      <p className="footer-tagline">Built in the Himalayas, for anyone curious about the birds outside their window.</p>
+      <p className="footer-attribution">
+        Bird identification powered by{' '}
+        <a href="https://github.com/birdnet-team/BirdNET-Analyzer" target="_blank" rel="noreferrer">
+          BirdNET-Analyzer
+        </a>
+        {' · '}
+        <a href="https://github.com/007SK" target="_blank" rel="noreferrer">GitHub</a>
+      </p>
 
-      <div className="footer-branding">
+      <div className="footer-branding-row">
         <div
           className="footer-photo-wrap"
           ref={photoWrapRef}
@@ -52,30 +50,28 @@ export default function Footer() {
           )}
           <img src={swatiPhoto} alt="Swati Kumari" className="footer-avatar" />
         </div>
-        <div className="footer-icons">
-          <a
-            href="https://github.com/007SK"
-            target="_blank"
-            rel="noreferrer"
-            className="footer-icon-link"
-            onClick={e => e.stopPropagation()}
-          >
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d={GH_PATH} />
-            </svg>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/007sk/"
-            target="_blank"
-            rel="noreferrer"
-            className="footer-icon-link"
-            onClick={e => e.stopPropagation()}
-          >
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d={LI_PATH} />
-            </svg>
-          </a>
-        </div>
+        <a
+          href="https://github.com/007SK"
+          target="_blank"
+          rel="noreferrer"
+          className="footer-icon-link"
+          onClick={e => e.stopPropagation()}
+        >
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d={GH_PATH} />
+          </svg>
+        </a>
+        <a
+          href="https://www.linkedin.com/in/007sk/"
+          target="_blank"
+          rel="noreferrer"
+          className="footer-icon-link"
+          onClick={e => e.stopPropagation()}
+        >
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d={LI_PATH} />
+          </svg>
+        </a>
       </div>
     </footer>
   )

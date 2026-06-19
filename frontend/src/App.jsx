@@ -106,7 +106,7 @@ export default function App() {
 
         {view !== 'species' && result && <ResultsCard result={result} />}
 
-        <GlobalFeed refreshTrigger={feedTick} />
+        {view === 'record' && <GlobalFeed refreshTrigger={feedTick} />}
       </main>
 
       <Footer />

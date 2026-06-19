@@ -145,11 +145,18 @@
 }
 
 .app-byline {
-  font-size: 12px;
+  font-size: 15px;
   color: #9ab09a;
   margin-top: 2px;
   text-align: center;
   user-select: none;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.app-byline-wrap:hover .app-byline {
+  color: #4a8a4a;
 }
 
 .byline-tooltip {
@@ -1073,15 +1080,10 @@
 /* ── Footer layout ── */
 .app-footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: left;
-}
-
-.footer-main {
-  display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
 }
 
 .footer-tagline {
@@ -1094,12 +1096,11 @@
   margin: 0;
 }
 
-.footer-branding {
-  flex-shrink: 0;
+.footer-branding-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
 }
 
 .footer-photo-wrap {
@@ -1108,17 +1109,12 @@
 }
 
 .footer-avatar {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid rgba(0, 0, 0, 0.12);
   display: block;
-}
-
-.footer-icons {
-  display: flex;
-  gap: 8px;
 }
 
 .footer-icon-link {
