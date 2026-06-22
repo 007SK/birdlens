@@ -297,6 +297,13 @@
 .location-form__input-wrap {
   position: relative;
   flex: 1;
+  min-width: 200px;
+}
+
+.location-form__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .location-form__input {

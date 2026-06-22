@@ -249,31 +249,33 @@ export default function LocationInput() {
             </ul>
           )}
         </div>
-        <button
-          className="btn btn--ghost location-form__geo-btn"
-          type="button"
-          onClick={useMyLocation}
-          disabled={geoLoading}
-          title="Detect my location automatically"
-        >
-          {geoLoading ? '…' : '📍 Use my location'}
-        </button>
-        <button
-          className="btn btn--ghost location-form__btn"
-          type="button"
-          onClick={cancelEdit}
-        >
-          Cancel
-        </button>
-        {saved && (
+        <div className="location-form__actions">
+          <button
+            className="btn btn--ghost location-form__geo-btn"
+            type="button"
+            onClick={useMyLocation}
+            disabled={geoLoading}
+            title="Detect my location automatically"
+          >
+            {geoLoading ? '…' : '📍 Use my location'}
+          </button>
           <button
             className="btn btn--ghost location-form__btn"
             type="button"
-            onClick={keepBlank}
+            onClick={cancelEdit}
           >
-            Keep blank
+            Cancel
           </button>
-        )}
+          {saved && (
+            <button
+              className="btn btn--ghost location-form__btn"
+              type="button"
+              onClick={keepBlank}
+            >
+              Keep blank
+            </button>
+          )}
+        </div>
       </form>
       <p className="location-helper">Optional — helps identify local species</p>
       {geoError && <p className="location-geo-error">{geoError}</p>}
