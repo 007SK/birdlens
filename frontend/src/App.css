@@ -291,6 +291,7 @@
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .location-form__input-wrap {
@@ -321,6 +322,8 @@
 
 .location-form__btn {
   white-space: nowrap;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
 }
 
 .location-suggestions {
@@ -1069,9 +1072,11 @@
   padding: 6px 10px;
   border-radius: 4px;
   width: 180px;
+  max-width: calc(100vw - 20px);
   text-align: center;
   pointer-events: none;
   z-index: 10;
+  box-sizing: border-box;
 }
 
 .secondary-action__tooltip::after {
@@ -1135,8 +1140,8 @@
 }
 
 .footer-avatar {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid rgba(0, 0, 0, 0.12);
@@ -1279,10 +1284,6 @@
     width: 100%;
     aspect-ratio: 1;
     border-radius: 8px;
-  }
-
-  .location-form {
-    flex-wrap: wrap;
   }
 
   .location-form__geo-btn {

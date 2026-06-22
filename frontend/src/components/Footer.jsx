@@ -52,7 +52,7 @@ export default function Footer() {
           rel="noreferrer"
           className="footer-icon-link"
         >
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d={GH_PATH} />
           </svg>
         </a>
@@ -62,7 +62,7 @@ export default function Footer() {
           rel="noreferrer"
           className="footer-icon-link"
         >
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d={LI_PATH} />
           </svg>
         </a>
