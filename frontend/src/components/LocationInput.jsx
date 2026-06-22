@@ -22,6 +22,8 @@ function extractCityCountry(address) {
   return city || country || ''
 }
 
+const SESSION_SKIP_KEY = 'birdlens_location_skipped'
+
 export default function LocationInput() {
   const stored = readStored()
   const [saved, setSaved] = useState(stored?.text ?? '')
@@ -31,6 +33,9 @@ export default function LocationInput() {
   const [geoLoading, setGeoLoading] = useState(false)
   const [justSaved, setJustSaved] = useState(false)
   const [suggestions, setSuggestions] = useState([])
+  const [skippedThisSession, setSkippedThisSession] = useState(
+    () => sessionStorage.getItem(SESSION_SKIP_KEY) === 'true'
+  )
   const inputRef = useRef(null)
   const debounceRef = useRef(null)
   const wrapRef = useRef(null)
@@ -48,11 +53,27 @@ export default function LocationInput() {
   function persistLocation(text, lat, lon) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ text, lat, lon }))
     setSaved(text)
+    setSkippedThisSession(false)
+    sessionStorage.removeItem(SESSION_SKIP_KEY)
     setEditing(false)
     setGeoError('')
     setSuggestions([])
     setJustSaved(true)
     setTimeout(() => setJustSaved(false), 2000)
+  }
+
+  function cancelEdit() {
+    setSuggestions([])
+    setSkippedThisSession(false)
+    sessionStorage.removeItem(SESSION_SKIP_KEY)
+    setEditing(false)
+  }
+
+  function keepBlank() {
+    setSuggestions([])
+    setSkippedThisSession(true)
+    sessionStorage.setItem(SESSION_SKIP_KEY, 'true')
+    setEditing(false)
   }
 
   function useMyLocation() {
@@ -170,8 +191,8 @@ export default function LocationInput() {
     setTimeout(() => inputRef.current?.focus(), 0)
   }
 
-  // Location saved, not editing → pill
-  if (!editing && saved) {
+  // Location saved and not skipped, not editing → pill
+  if (!editing && saved && !skippedThisSession) {
     return (
       <div className="location-display">
         <span className="location-display__icon">📍</span>
@@ -182,8 +203,8 @@ export default function LocationInput() {
     )
   }
 
-  // No location saved, not editing → placeholder box
-  if (!editing && !saved) {
+  // No location saved or skipped this session, not editing → placeholder box
+  if (!editing && (!saved || skippedThisSession)) {
     return (
       <>
         <div
@@ -237,13 +258,20 @@ export default function LocationInput() {
         >
           {geoLoading ? '…' : '📍 Use my location'}
         </button>
+        <button
+          className="btn btn--ghost location-form__btn"
+          type="button"
+          onClick={cancelEdit}
+        >
+          Cancel
+        </button>
         {saved && (
           <button
             className="btn btn--ghost location-form__btn"
             type="button"
-            onClick={() => { setSuggestions([]); setEditing(false) }}
+            onClick={keepBlank}
           >
-            Cancel
+            Keep blank
           </button>
         )}
       </form>
