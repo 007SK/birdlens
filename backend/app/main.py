@@ -192,10 +192,18 @@ async def discoveries() -> dict:
 @app.get("/feed", response_model=FeedResponse)
 async def feed() -> dict:
     """Return the last 10 runs with top species, newest first."""
-    return {"runs": database.get_feed()}
+    try:
+        return {"runs": database.get_feed()}
+    except Exception as e:
+        print(f"get_feed failed: {e}")
+        return {"runs": []}
 
 
 @app.get("/stats", response_model=StatsOut)
 async def stats() -> dict:
     """Return aggregate counts for the stats bar."""
-    return database.get_stats()
+    try:
+        return database.get_stats()
+    except Exception as e:
+        print(f"get_stats failed: {e}")
+        return {"total_runs": 0, "total_detections": 0, "unique_species": 0}

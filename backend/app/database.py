@@ -109,11 +109,10 @@ def _confidence_label(confidence: float) -> str:
 
 def get_feed() -> list[dict]:
     """Return the 10 most recent runs that have at least one detection, with full detection lists."""
-    supabase = get_supabase_client()
-
-    # Over-fetch runs so we can still return 10 after excluding empty runs.
+    # Fresh client per query — reusing one client across multiple HTTP/2 streams
+    # triggers ConnectionTerminated errors when the server sends GOAWAY after stream 1.
     runs_result = (
-        supabase.table("runs")
+        get_supabase_client().table("runs")
         .select("*")
         .order("created_at", desc=True)
         .limit(50)
@@ -124,7 +123,7 @@ def get_feed() -> list[dict]:
 
     run_ids = [r["id"] for r in runs_result.data]
     dets_result = (
-        supabase.table("detections")
+        get_supabase_client().table("detections")
         .select("run_id, species_common, species_scientific, confidence")
         .in_("run_id", run_ids)
         .execute()
@@ -138,7 +137,7 @@ def get_feed() -> list[dict]:
     image_by_species: dict[str, Optional[str]] = {}
     if scientific_names:
         cache_result = (
-            supabase.table("species_cache")
+            get_supabase_client().table("species_cache")
             .select("species_scientific, image_url")
             .in_("species_scientific", scientific_names)
             .execute()
@@ -174,9 +173,7 @@ def get_feed() -> list[dict]:
 
 def get_discoveries() -> list[dict]:
     """Return all unique species ever detected with aggregate stats and most recent location."""
-    supabase = get_supabase_client()
-
-    dets = supabase.table("detections").select("species_common, species_scientific, run_id, created_at").execute().data
+    dets = get_supabase_client().table("detections").select("species_common, species_scientific, run_id, created_at").execute().data
     if not dets:
         return []
 
@@ -197,10 +194,10 @@ def get_discoveries() -> list[dict]:
         agg[sci]["run_ids"].append(d["run_id"])
 
     sci_names = list(agg.keys())
-    cache = supabase.table("species_cache").select("species_scientific, image_url").in_("species_scientific", sci_names).execute().data
+    cache = get_supabase_client().table("species_cache").select("species_scientific, image_url").in_("species_scientific", sci_names).execute().data
     image_map = {r["species_scientific"]: r["image_url"] for r in cache}
 
-    runs_all = supabase.table("runs").select("id, location_label, created_at").execute().data
+    runs_all = get_supabase_client().table("runs").select("id, location_label, created_at").execute().data
     loc_by_run = {r["id"]: (r["location_label"], r["created_at"]) for r in runs_all if r.get("location_label")}
 
     results = []
@@ -228,12 +225,10 @@ def get_discoveries() -> list[dict]:
 
 def get_stats() -> dict:
     """Return aggregate counts for the stats bar."""
-    supabase = get_supabase_client()
-
-    runs_result = supabase.table("runs").select("id").execute()
+    runs_result = get_supabase_client().table("runs").select("id").execute()
     total_runs = len(runs_result.data)
 
-    dets_result = supabase.table("detections").select("id, species_scientific").execute()
+    dets_result = get_supabase_client().table("detections").select("id, species_scientific").execute()
     total_detections = len(dets_result.data)
     unique_species = (
         len({d["species_scientific"] for d in dets_result.data})
